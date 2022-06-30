@@ -1,6 +1,102 @@
-<h2>Statuses</h2>
+<button type="button" (click)="createLead()">Создать Лид</button>
 <div id="outer-status-button">
+    <div class="inner-status-button">
+        <button type="button" (click)="onSelectAllStatutes()">Все</button>
+    </div>
+    
     <div class="inner-status-button" *ngFor="let status of statuses">
-        <button type="submit">{{status.name}}</button>
+        <button type="button" (click)="onSelectStatus(status)">{{status.name}}</button>
     </div>
 </div>
+
+<div *ngIf="createLeadFlag">
+    
+        <mat-form-field hintLabel="Макс 30 символов" appearance="fill">
+            <mat-label>Введите имя</mat-label>
+            <input matInput #input maxlength="30" placeholder="Имя" [(ngModel)]="leadToCreate.firstName">
+            <mat-hint align="end">{{input.value?.length || 0}}/30</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field hintLabel="Макс 30 символов" appearance="fill">
+            <mat-label>Введите фамилию</mat-label>
+            <input matInput #input maxlength="30" placeholder="Фамилия" [(ngModel)]="leadToCreate.lastName">
+            <mat-hint align="end">{{input.value?.length || 0}}/30</mat-hint>
+        </mat-form-field>
+  
+        <mat-form-field hintLabel="Только цифры" appearance="fill">
+            <mat-label>Введите телефон</mat-label>
+            <input matInput #input maxlength="11" placeholder="Телефон" [(ngModel)]="leadToCreate.phone">
+            <mat-hint align="end">{{input.value?.length || 0}}/11</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field hintLabel="Макс 200 символов" appearance="fill">
+            <mat-label>Введите адрес</mat-label>
+            <input matInput #input maxlength="200" placeholder="Адрес" [(ngModel)]="leadToCreate.address">
+            <mat-hint align="end">{{input.value?.length || 0}}/200</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field hintLabel="Макс 50 символов" appearance="fill">
+            <mat-label>Введите электронную почту</mat-label>
+            <input matInput #input maxlength="50" placeholder="Электронная почта" [(ngModel)]="leadToCreate.email">
+            <mat-hint align="end">{{input.value?.length || 0}}/50</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Выберите статус</mat-label>
+            <mat-select>
+              <mat-option value="option">Вариант</mat-option>
+            </mat-select>
+            <mat-hint align="end">Вот выпадающий список ^</mat-hint>
+          </mat-form-field>
+</div>
+
+<table mat-table *ngIf="selectedLeads" [dataSource]="selectedLeads">
+    
+    <ng-container matColumnDef="firstName">
+        <th mat-header-cell *matHeaderCellDef> Имя </th>
+        <td mat-cell *matCellDef="let lead"> {{lead.firstName}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="lastName">
+        <th mat-header-cell *matHeaderCellDef> Фамилия </th>
+        <td mat-cell *matCellDef="let lead"> {{lead.lastName}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="phone">
+        <th mat-header-cell *matHeaderCellDef> Телефон </th>
+        <td mat-cell *matCellDef="let lead"> {{lead.phone}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="address">
+        <th mat-header-cell *matHeaderCellDef> Адрес </th>
+        <td mat-cell *matCellDef="let lead"> {{lead.address}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef> Почта </th>
+        <td mat-cell *matCellDef="let lead"> {{lead.email}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="storage">
+        <th mat-header-cell *matHeaderCellDef> Хранилище </th>
+        <td mat-cell *matCellDef="let lead"> {{lead.storage}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="tradePrice">
+        <th mat-header-cell *matHeaderCellDef> Закупочная цена </th>
+        <td mat-cell *matCellDef="let lead"> {{lead.tradePrice}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="discount">
+        <th mat-header-cell *matHeaderCellDef> Скидка </th>
+        <td mat-cell *matCellDef="let lead"> {{lead.discount}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="creationDate">
+        <th mat-header-cell *matHeaderCellDef> Дата создания </th>
+        <td mat-cell *matCellDef="let lead"> {{lead.creationDate}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
