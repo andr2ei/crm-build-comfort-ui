@@ -1,55 +1,65 @@
-<button type="button" (click)="createLead()">Создать Лид</button>
+<button mat-flat-button color="primary" (click)="createLead()">Создать Лид</button>
 <div id="outer-status-button">
     <div class="inner-status-button">
-        <button type="button" (click)="onSelectAllStatutes()">Все</button>
+        <button mat-raised-button color="primary" (click)="onSelectAllStatutes()">Все</button>
     </div>
     
     <div class="inner-status-button" *ngFor="let status of statuses">
-        <button type="button" (click)="onSelectStatus(status)">{{status.name}}</button>
+        <button mat-raised-button (click)="onSelectStatus(status)">{{status.name}}</button>
     </div>
 </div>
 
 <div *ngIf="createLeadFlag">
-    
+    <div>
         <mat-form-field hintLabel="Макс 30 символов" appearance="fill">
             <mat-label>Введите имя</mat-label>
             <input matInput #input maxlength="30" placeholder="Имя" [(ngModel)]="leadToCreate.firstName">
             <mat-hint align="end">{{input.value?.length || 0}}/30</mat-hint>
         </mat-form-field>
-
+    </div>
+    <div>
         <mat-form-field hintLabel="Макс 30 символов" appearance="fill">
             <mat-label>Введите фамилию</mat-label>
             <input matInput #input maxlength="30" placeholder="Фамилия" [(ngModel)]="leadToCreate.lastName">
             <mat-hint align="end">{{input.value?.length || 0}}/30</mat-hint>
         </mat-form-field>
-  
+    </div>
+    <div>
         <mat-form-field hintLabel="Только цифры" appearance="fill">
             <mat-label>Введите телефон</mat-label>
             <input matInput #input maxlength="11" placeholder="Телефон" [(ngModel)]="leadToCreate.phone">
             <mat-hint align="end">{{input.value?.length || 0}}/11</mat-hint>
         </mat-form-field>
-
+    </div>
+    <div>
         <mat-form-field hintLabel="Макс 200 символов" appearance="fill">
             <mat-label>Введите адрес</mat-label>
             <input matInput #input maxlength="200" placeholder="Адрес" [(ngModel)]="leadToCreate.address">
             <mat-hint align="end">{{input.value?.length || 0}}/200</mat-hint>
         </mat-form-field>
-
+    </div>
+    <div>
         <mat-form-field hintLabel="Макс 50 символов" appearance="fill">
             <mat-label>Введите электронную почту</mat-label>
             <input matInput #input maxlength="50" placeholder="Электронная почта" [(ngModel)]="leadToCreate.email">
             <mat-hint align="end">{{input.value?.length || 0}}/50</mat-hint>
         </mat-form-field>
-
+    </div>
+    <div>
         <mat-form-field appearance="fill">
             <mat-label>Выберите статус</mat-label>
-            <mat-select>
-              <mat-option value="option">Вариант</mat-option>
+            <mat-select [(ngModel)]="statusOfLeadToCreate.name">
+                <div *ngFor="let status of statuses">
+                    <mat-option value="{{status.name}}">{{status.name}}</mat-option>
+                </div>
             </mat-select>
             <mat-hint align="end">Вот выпадающий список ^</mat-hint>
-          </mat-form-field>
+        </mat-form-field>
+    </div>
+        <div>
+            <button mat-flat-button color="primary" (click)="saveLead()">Создать</button>
+        </div>
 </div>
-
 <table mat-table *ngIf="selectedLeads" [dataSource]="selectedLeads">
     
     <ng-container matColumnDef="firstName">
@@ -98,5 +108,83 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onEditLead(row)"></tr>
 </table>
+
+<div *ngIf="editLeadFlag">
+
+    <div>
+        <mat-form-field hintLabel="Макс 30 символов" appearance="fill">
+            <mat-label>Введите имя</mat-label>
+            <input matInput #input maxlength="30" placeholder="Имя" [(ngModel)]="leadToEdit.firstName">
+            <mat-hint align="end">{{input.value?.length || 0}}/30</mat-hint>
+        </mat-form-field>
+    </div>
+    <div>
+        <mat-form-field hintLabel="Макс 30 символов" appearance="fill">
+            <mat-label>Введите фамилию</mat-label>
+            <input matInput #input maxlength="30" placeholder="Фамилия" [(ngModel)]="leadToEdit.lastName">
+            <mat-hint align="end">{{input.value?.length || 0}}/30</mat-hint>
+        </mat-form-field>
+    </div>
+    <div>
+        <mat-form-field hintLabel="Только цифры" appearance="fill">
+            <mat-label>Введите телефон</mat-label>
+            <input matInput #input maxlength="11" placeholder="Телефон" [(ngModel)]="leadToEdit.phone">
+            <mat-hint align="end">{{input.value?.length || 0}}/11</mat-hint>
+        </mat-form-field>
+    </div>
+    <div>
+        <mat-form-field hintLabel="Макс 200 символов" appearance="fill">
+            <mat-label>Введите адрес</mat-label>
+            <input matInput #input maxlength="200" placeholder="Адрес" [(ngModel)]="leadToEdit.address">
+            <mat-hint align="end">{{input.value?.length || 0}}/200</mat-hint>
+        </mat-form-field>
+    </div>
+    <div>
+        <mat-form-field hintLabel="Макс 50 символов" appearance="fill">
+            <mat-label>Введите электронную почту</mat-label>
+            <input matInput #input maxlength="50" placeholder="Электронная почта" [(ngModel)]="leadToEdit.email">
+            <mat-hint align="end">{{input.value?.length || 0}}/50</mat-hint>
+        </mat-form-field>
+    </div>
+
+    <div>
+        <mat-form-field hintLabel="Макс 200 символов" appearance="fill">
+            <mat-label>Введите склад</mat-label>
+            <input matInput #input maxlength="200" placeholder="склад" [(ngModel)]="leadToEdit.storage">
+            <mat-hint align="end">{{input.value?.length || 0}}/200</mat-hint>
+        </mat-form-field>
+    </div>
+
+    <div>
+        <mat-form-field appearance="fill" floatLabel="always">
+            <mat-label>Закупочная цена</mat-label>
+            <input matInput type="number" placeholder="0" [(ngModel)]="leadToEdit.tradePrice">
+            <span matPrefix>Рублей&nbsp;</span>
+          </mat-form-field>
+    </div>
+
+    <div>
+        <mat-form-field appearance="fill" floatLabel="always">
+            <mat-label>Скидка</mat-label>
+            <input matInput type="number" placeholder="0" [(ngModel)]="leadToEdit.discount">
+            <span matPrefix>%&nbsp;</span>
+          </mat-form-field>
+    </div>
+
+    <div>
+        <mat-form-field appearance="fill">
+            <mat-label>Выберите статус</mat-label>
+            <mat-select [(ngModel)]="statusOfLeadToUpdate.name">
+                <div *ngFor="let status of statuses">
+                    <mat-option value="{{status.name}}">{{status.name}}</mat-option>
+                </div>
+            </mat-select>
+            <mat-hint align="end">Вот выпадающий список ^</mat-hint>
+        </mat-form-field>
+    </div>
+    <div>
+        <button mat-flat-button color="primary" (click)="onUpdateLead()">Обновить</button>
+    </div>
+</div>
