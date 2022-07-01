@@ -11,7 +11,7 @@ import { Lead } from '../model/lead';
 export class StatusComponent implements OnInit {
 
   displayedColumns: string[] = ['firstName', 'lastName', 'phone', 'address', 'email', 
-                                'storage', 'tradePrice', 'discount', 'creationDate'];
+                                'storage', 'tradePrice', 'discount', 'creationDate', 'status'];
 
   private allStatusesURL = 'http://localhost:8080/api/v1/status/all'
   
@@ -67,6 +67,7 @@ export class StatusComponent implements OnInit {
 
   ngOnInit(): void {
     this.getStatuses();
+    this.onSelectAllStatutes()
   }
 
   getStatuses(): void {
