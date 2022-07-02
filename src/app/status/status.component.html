@@ -56,9 +56,10 @@
             <mat-hint align="end">Вот выпадающий список ^</mat-hint>
         </mat-form-field>
     </div>
-        <div>
-            <button mat-flat-button color="primary" (click)="onSaveLead()">Сохранить Лид</button>
-        </div>
+    <div>
+        <button mat-flat-button color="primary" (click)="onSaveLead()">Сохранить Лид</button>
+        <mat-spinner *ngIf="saveLeadInProgress"></mat-spinner>
+    </div>
 </div>
 <table mat-table *ngIf="selectedLeads" [dataSource]="selectedLeads">
     
@@ -88,7 +89,7 @@
     </ng-container>
 
     <ng-container matColumnDef="storage">
-        <th mat-header-cell *matHeaderCellDef> Хранилище </th>
+        <th mat-header-cell *matHeaderCellDef> Склад </th>
         <td mat-cell *matCellDef="let lead"> {{lead.storage}} </td>
     </ng-container>
 
@@ -167,7 +168,6 @@
             <mat-form-field appearance="fill" floatLabel="always">
                 <mat-label>Закупочная цена</mat-label>
                 <input matInput type="number" placeholder="0" [(ngModel)]="leadToEdit.tradePrice">
-                <span matPrefix>Рублей&nbsp;</span>
             </mat-form-field>
         </div>
 
@@ -191,7 +191,7 @@
             </mat-form-field>
         </div>
         <div>
-            <button mat-flat-button color="primary" (click)="onUpdateLead()">Обновить Лид</button>
+            <button mat-flat-button color="primary" (click)="onUpdateLead()">Сохранить Лид</button>
         </div>
     </div>
     <div class="inner-status-button">
@@ -229,7 +229,7 @@
             <tr mat-row *matRowDef="let row; columns: displayedProductColumns;" (click)="onEditProduct(row)"></tr>
         </table>
         <div>
-            <h3>Всего {{getTotalCost()}} рублей</h3>
+            <h3>Всего {{getTotalCost()}} руб, со скидкой {{leadToEdit.discount}}% {{getTotalCostWithDiscount()}} руб</h3>
         </div>
         <div *ngIf="createProductFlag">
             <mat-form-field hintLabel="Макс 50 символов" appearance="fill">
@@ -241,7 +241,6 @@
             <mat-form-field appearance="fill" floatLabel="always">
                 <mat-label>Цена</mat-label>
                 <input matInput type="number" placeholder="0" [(ngModel)]="productToCreate.price">
-                <span matPrefix>Рублей&nbsp;</span>
             </mat-form-field>
 
             <mat-form-field appearance="fill" floatLabel="always">

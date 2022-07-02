@@ -31,7 +31,8 @@ export class StatusComponent implements OnInit {
   selectedLeads?: Lead[]
   selectedStatus?: Status
 
-  createLeadFlag: boolean = false;
+  saveLeadInProgress: boolean = false
+  createLeadFlag: boolean = false
   statusOfLeadToCreate: Status = {
     id: 0,
     name: ''
@@ -91,6 +92,15 @@ export class StatusComponent implements OnInit {
     leadId: 0,
     service: false
   }
+  emptyProduct: Product = {
+    id: 0,
+    name: '',
+    price: 0,
+    count: 0,
+    comment: '',
+    leadId: 0,
+    service: false
+  }
 
   constructor(
     private http: HttpClient) { }
@@ -116,11 +126,13 @@ export class StatusComponent implements OnInit {
 
   onSelectStatus(status: Status): void {
     this.selectedStatus = status
+
     this.createLeadFlag = false
     this.editLeadFlag = false
     this.editProductFlag = false
+
     this.http.get<Lead[]>(this.allLeadsByStatusIdURL + status.id)
-              .subscribe(leads => this.selectedLeads = leads)
+      .subscribe(leads => this.selectedLeads = leads)
   }
 
   onCreateLead(): void {
@@ -134,13 +146,15 @@ export class StatusComponent implements OnInit {
   onSaveLead(): void {
     var foundStatus = this.statuses.filter(status => status.name == this.statusOfLeadToCreate.name)[0]
     this.leadToCreate.status = structuredClone(foundStatus)
+
     var today = new Date()
     var dd = String(today.getDate()).padStart(2, '0')
     var mm = String(today.getMonth() + 1).padStart(2, '0')
     var yyyy = today.getFullYear()
     this.leadToCreate.creationDate = yyyy + '-' + mm + '-' + dd
+
     this.http.post<Lead>(this.saveLeadURL, this.leadToCreate)
-              .subscribe(obj => obj)
+      .subscribe(obj => obj)
   }
 
   onEditLead(lead: Lead): void {
@@ -175,15 +189,20 @@ export class StatusComponent implements OnInit {
     this.http.put<Product>(this.editProductURL, this.productToEdit)
               .subscribe(obj => obj)
     this.productsOfLeadToUpdate = this.productsOfLeadToUpdate.filter(p => p.id != this.productToEdit.id)
-    this.productsOfLeadToUpdate.push(this.productToEdit)
+    this.productsOfLeadToUpdate.push(structuredClone(this.productToEdit))
+    this.editProductFlag = false
+    let cloned = [...this.productsOfLeadToUpdate]
+    this.productsOfLeadToUpdate = cloned
   }
 
   onDeleteProduct(): void {
     this.http.delete(this.deleteProductURL + this.productToEdit.id).subscribe(obj => obj)
     this.productsOfLeadToUpdate = this.productsOfLeadToUpdate.filter(p => p.id != this.productToEdit.id)
+    this.editProductFlag = false
   }
 
   onCreateProduct(): void {
+    this.productToCreate = structuredClone(this.emptyProduct)
     this.createProductFlag = true
     this.editProductFlag = false
   }
@@ -192,15 +211,22 @@ export class StatusComponent implements OnInit {
     this.productToCreate.leadId = this.leadToEdit.id
     this.http.post<Product>(this.saveProductURL, this.productToCreate)
               .subscribe(product => this.productToCreate = product)
-    this.productsOfLeadToUpdate.push(this.productToCreate)
+    this.productsOfLeadToUpdate.push(structuredClone(this.productToCreate))
     let cloned = [...this.productsOfLeadToUpdate]
     this.productsOfLeadToUpdate = cloned
+    this.createProductFlag = false
   }
 
   getTotalCost(): number {
     let result = this.productsOfLeadToUpdate
       .map(p => p.price * p.count)
       .reduce((prev, curr) => (prev + curr), 0)
-    return result * (1 - this.leadToEdit.discount / 100)
+    return Math.round(result * 100) / 100
+  }
+
+  getTotalCostWithDiscount(): number {
+    let result = this.getTotalCost()
+    let discount = (1 - this.leadToEdit.discount / 100)
+    return Math.round(result * discount * 100) / 100
   }
 }
