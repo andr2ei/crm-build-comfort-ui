@@ -228,6 +228,9 @@
             <tr mat-header-row *matHeaderRowDef="displayedProductColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedProductColumns;" (click)="onEditProduct(row)"></tr>
         </table>
+        <div>
+            <h3>Всего {{getTotalCost()}} рублей</h3>
+        </div>
         <div *ngIf="createProductFlag">
             <mat-form-field hintLabel="Макс 50 символов" appearance="fill">
                 <mat-label>Введите имя</mat-label>
@@ -281,6 +284,7 @@
         </div>
         <div *ngIf="editProductFlag">
             <button mat-flat-button color="primary" (click)="onUpdateProduct()">Обновить Продукт</button>
+            <button mat-flat-button (click)="onDeleteProduct()">Удалить Продукт</button>
         </div>
     </div>
 </div>

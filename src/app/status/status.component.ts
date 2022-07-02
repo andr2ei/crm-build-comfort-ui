@@ -25,6 +25,7 @@ export class StatusComponent implements OnInit {
   private allProductsByLeadIdURL = 'http://localhost:8080/api/v1/product/all/lead/'
   private editProductURL = 'http://localhost:8080/api/v1/product/edit'
   private saveProductURL = 'http://localhost:8080/api/v1/product/create'
+  private deleteProductURL = 'http://localhost:8080/api/v1/product/'
 
   statuses: Status[] = []
   selectedLeads?: Lead[]
@@ -177,6 +178,11 @@ export class StatusComponent implements OnInit {
     this.productsOfLeadToUpdate.push(this.productToEdit)
   }
 
+  onDeleteProduct(): void {
+    this.http.delete(this.deleteProductURL + this.productToEdit.id).subscribe(obj => obj)
+    this.productsOfLeadToUpdate = this.productsOfLeadToUpdate.filter(p => p.id != this.productToEdit.id)
+  }
+
   onCreateProduct(): void {
     this.createProductFlag = true
     this.editProductFlag = false
@@ -189,5 +195,12 @@ export class StatusComponent implements OnInit {
     this.productsOfLeadToUpdate.push(this.productToCreate)
     let cloned = [...this.productsOfLeadToUpdate]
     this.productsOfLeadToUpdate = cloned
+  }
+
+  getTotalCost(): number {
+    let result = this.productsOfLeadToUpdate
+      .map(p => p.price * p.count)
+      .reduce((prev, curr) => (prev + curr), 0)
+    return result * (1 - this.leadToEdit.discount / 100)
   }
 }
