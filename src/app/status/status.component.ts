@@ -5,6 +5,7 @@ import { Lead } from '../model/lead';
 import { Product } from '../model/product';
 import { MessageService } from '../service/message.service'
 import { MessagesComponent } from '../messages/messages.component'
+import {MatTableDataSource} from '@angular/material/table'
 
 import {MatDialog} from '@angular/material/dialog';
 
@@ -15,8 +16,9 @@ import {MatDialog} from '@angular/material/dialog';
 })
 export class StatusComponent implements OnInit {
 
-  displayedLeadColumns: string[] = ['firstName', 'lastName', 'phone', 'address', 'email', 
-                                'storage', 'tradePrice', 'discount', 'creationDate', 'status'];
+  displayedLeadColumns: string[] = ['id', 'firstName', 'lastName', 'phone', 'address', 'email', 
+                                'storage', 'tradePrice', 'costWithDiscount', 'cost', 
+                                'discount', 'creationDate', 'status'];
   displayedProductColumns: string[] = ['name', 'price', 'count', 'comment', 'cost']
   
   private allStatusesURL = 'http://localhost:8080/api/v1/status/all'
@@ -33,6 +35,7 @@ export class StatusComponent implements OnInit {
 
   statuses: Status[] = []
   selectedLeads?: Lead[]
+  clonedSelectedLeads: Lead[] = []
   selectedStatus?: Status
 
   saveLeadInProgress: boolean = false
@@ -52,7 +55,8 @@ export class StatusComponent implements OnInit {
     tradePrice: 0,
     discount: 0,
     status: undefined,
-    creationDate: ''
+    creationDate: '',
+    products: []
   };
 
   editLeadFlag: boolean = false
@@ -71,7 +75,8 @@ export class StatusComponent implements OnInit {
     tradePrice: 0,
     discount: 0,
     status: undefined,
-    creationDate: ''
+    creationDate: '',
+    products: []
   };
 
   editProductFlag: boolean = false;
@@ -127,7 +132,10 @@ export class StatusComponent implements OnInit {
     this.editProductFlag = false
     this.selectedStatus = undefined
     this.http.get<Lead[]>(this.allLeadsURL)
-              .subscribe(leads => this.selectedLeads = leads)
+      .subscribe(leads => {
+        this.clonedSelectedLeads = [...leads]
+        this.selectedLeads = leads
+      })
   }
 
   onSelectStatus(status: Status): void {
@@ -138,7 +146,10 @@ export class StatusComponent implements OnInit {
     this.editProductFlag = false
 
     this.http.get<Lead[]>(this.allLeadsByStatusIdURL + status.id)
-      .subscribe(leads => this.selectedLeads = leads)
+      .subscribe(leads => {
+        this.clonedSelectedLeads = [...leads]
+        this.selectedLeads = leads
+      })
   }
 
   onCreateLead(): void {
@@ -229,15 +240,31 @@ export class StatusComponent implements OnInit {
   }
 
   getTotalCost(): number {
-    let result = this.productsOfLeadToUpdate
+    return this.getTotalCostOfProducts(this.productsOfLeadToUpdate)
+  }
+
+  getTotalCostWithDiscount(): number {
+    return this.getTotalCostWithDiscountOfProducts(this.productsOfLeadToUpdate, this.leadToEdit.discount)
+  }
+
+  getTotalCostOfProducts(products: Product[]): number {
+    let result = products
       .map(p => p.price * p.count)
       .reduce((prev, curr) => (prev + curr), 0)
     return Math.round(result * 100) / 100
   }
 
-  getTotalCostWithDiscount(): number {
-    let result = this.getTotalCost()
-    let discount = (1 - this.leadToEdit.discount / 100)
-    return Math.round(result * discount * 100) / 100
+  getTotalCostWithDiscountOfProducts(products: Product[], discount: number): number {
+    let result = this.getTotalCostOfProducts(products)
+    let afterDiscount = (1 - discount / 100)
+    return Math.round(result * afterDiscount * 100) / 100
+  }
+
+  searchByPhoneNumber(event: Event) {
+    if (this.selectedLeads) {
+      const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+      let filtered = this.clonedSelectedLeads.filter(lead => lead.phone.startsWith(filterValue))
+      this.selectedLeads = filtered
+    }
   }
 }

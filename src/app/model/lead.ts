@@ -1,4 +1,5 @@
 import { Status } from "./status"
+import { Product } from "./product"
 
 export interface Lead {
     id: number
@@ -12,4 +13,5 @@ export interface Lead {
     discount: number
     status: Status | undefined
     creationDate: string
+    products: Product[]
 }
