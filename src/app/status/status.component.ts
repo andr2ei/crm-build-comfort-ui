@@ -3,6 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { Status } from '../model/status';
 import { Lead } from '../model/lead';
 import { Product } from '../model/product';
+import { MessageService } from '../service/message.service'
+import { MessagesComponent } from '../messages/messages.component'
+
+import {MatDialog} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-status',
@@ -103,7 +107,9 @@ export class StatusComponent implements OnInit {
   }
 
   constructor(
-    private http: HttpClient) { }
+    private http: HttpClient, 
+    private messageServ: MessageService, 
+    public dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.getStatuses();
@@ -141,6 +147,7 @@ export class StatusComponent implements OnInit {
     this.createLeadFlag = true
     this.editProductFlag = false
     this.createProductFlag = false
+    this.statusOfLeadToCreate.name = this.statuses[0].name
   }
 
   onSaveLead(): void {
@@ -154,7 +161,9 @@ export class StatusComponent implements OnInit {
     this.leadToCreate.creationDate = yyyy + '-' + mm + '-' + dd
 
     this.http.post<Lead>(this.saveLeadURL, this.leadToCreate)
-      .subscribe(obj => obj)
+      .subscribe(lead => this.leadToCreate = lead)
+    this.messageServ.add(`Новый Лид ${this.leadToCreate.firstName} ${this.leadToCreate.lastName} был создан`)
+    this.dialog.open(MessagesComponent)
   }
 
   onEditLead(lead: Lead): void {
@@ -176,7 +185,9 @@ export class StatusComponent implements OnInit {
     var foundStatus = this.statuses.filter(status => status.name == this.statusOfLeadToUpdate.name)[0]
     this.leadToEdit.status = structuredClone(foundStatus)
     this.http.put<Lead>(this.editLeadURL, this.leadToEdit)
-              .subscribe(obj => obj)
+      .subscribe(obj => obj)
+    this.messageServ.add(`Лид ${this.leadToEdit.firstName} ${this.leadToEdit.lastName} был успешно сохранен`)
+    this.dialog.open(MessagesComponent)
   }
 
   onEditProduct(product: Product): void {
