@@ -16,4 +16,21 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .mat-row:hover .mat-cell {
     border-color: currentColor;
-  }
+}
+
+.float-container {
+    border: 3px solid #fff;
+    padding: 20px;
+}
+
+.float-child-1 {
+    width: 25%;
+    float: left;
+    padding: 20px;
+}
+
+.float-child-2 {
+    width: 67%;
+    float: left;
+    padding: 20px;
+}

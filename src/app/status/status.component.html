@@ -149,9 +149,9 @@
     <tr mat-row *matRowDef="let row; columns: displayedLeadColumns;" (click)="onEditLead(row)"></tr>
 </table>
 
-<div *ngIf="editLeadFlag" id="outer-status-button">
+<div *ngIf="editLeadFlag" id="float-container">
 
-    <div class="inner-status-button">
+    <div class="float-child-1">
         <div>
             <mat-form-field hintLabel="Макс 30 символов" appearance="fill">
                 <mat-label>Введите имя</mat-label>
@@ -226,7 +226,7 @@
             <button mat-flat-button color="primary" (click)="onUpdateLead()">Сохранить Лид</button>
         </div>
     </div>
-    <div class="inner-status-button">
+    <div class="float-child-2">
         <div>
             <button mat-flat-button color="primary" (click)="onCreateProduct()">Создать Продукт</button>
         </div>
