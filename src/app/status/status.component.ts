@@ -267,4 +267,18 @@ export class StatusComponent implements OnInit {
       this.selectedLeads = filtered
     }
   }
+
+  sortByCostAsc(): void {
+    let sorted = this.clonedSelectedLeads
+      .sort((x, y) => this.getTotalCostOfProducts(x.products) - this.getTotalCostOfProducts(y.products))
+    let cloned = [...sorted]
+    this.selectedLeads = cloned
+  }
+
+  sortByCostDesc(): void {
+    let sorted = this.clonedSelectedLeads
+      .sort((x, y) => this.getTotalCostOfProducts(y.products) - this.getTotalCostOfProducts(x.products))
+    let cloned = [...sorted]
+    this.selectedLeads = cloned
+  }
 }
