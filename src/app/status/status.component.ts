@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Status } from '../model/status';
 import { Lead } from '../model/lead';
 import { Product } from '../model/product';
 import { MessageService } from '../service/message.service'
 import { MessagesComponent } from '../messages/messages.component'
-import {MatTableDataSource} from '@angular/material/table'
 
 import {MatDialog} from '@angular/material/dialog';
 
@@ -32,6 +31,7 @@ export class StatusComponent implements OnInit {
   private editProductURL = 'http://localhost:8080/api/v1/product/edit'
   private saveProductURL = 'http://localhost:8080/api/v1/product/create'
   private deleteProductURL = 'http://localhost:8080/api/v1/product/'
+  private exportPdfProductURL = 'http://localhost:8080/api/v1/product/export/pdf/'
 
   statuses: Status[] = []
   selectedLeads?: Lead[]
@@ -227,6 +227,19 @@ export class StatusComponent implements OnInit {
     this.productToCreate = structuredClone(this.emptyProduct)
     this.createProductFlag = true
     this.editProductFlag = false
+  }
+
+  onCreateCP(): void {
+    let headers = new HttpHeaders()
+    headers = headers.set('Accept', 'application/pdf')
+    let params = new HttpParams()
+    params = params.set('discount', this.leadToEdit.discount)
+    this.http.get(this.exportPdfProductURL + this.leadToEdit.id, { headers: headers, params: params, responseType: 'blob'})
+      .subscribe((data) => {
+          var blob = new Blob([data], {type: 'application/pdf'});
+          const fileURL = URL.createObjectURL(blob);
+          window.open(fileURL, '_blank', 'width=1000, height=800');
+      })
   }
 
   onSaveProduct(): void {
