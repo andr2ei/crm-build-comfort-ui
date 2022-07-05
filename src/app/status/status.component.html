@@ -234,7 +234,7 @@
         <table mat-table [dataSource]="productsOfLeadToUpdate">
         
             <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef> Имя </th>
+                <th mat-header-cell *matHeaderCellDef> Наименование </th>
                 <td mat-cell *matCellDef="let product"> {{product.name}} </td>
             </ng-container>
         
@@ -266,19 +266,19 @@
         </div>
         <div *ngIf="createProductFlag">
             <mat-form-field hintLabel="Макс 50 символов" appearance="fill">
-                <mat-label>Введите имя</mat-label>
+                <mat-label>Введите наименование</mat-label>
                 <input matInput #input maxlength="50" placeholder="Имя" [(ngModel)]="productToCreate.name">
                 <mat-hint align="end">{{input.value?.length || 0}}/50</mat-hint>
             </mat-form-field>
             
             <mat-form-field appearance="fill" floatLabel="always">
                 <mat-label>Цена</mat-label>
-                <input matInput type="number" placeholder="0" [(ngModel)]="productToCreate.price">
+                <input matInput type="number" [(ngModel)]="productToCreate.price">
             </mat-form-field>
 
             <mat-form-field appearance="fill" floatLabel="always">
                 <mat-label>Количество</mat-label>
-                <input matInput type="number" placeholder="0" [(ngModel)]="productToCreate.count">
+                <input matInput type="number" [(ngModel)]="productToCreate.count">
             </mat-form-field>
 
             <mat-form-field hintLabel="Макс 1000 символов" appearance="fill">
@@ -292,20 +292,20 @@
         </div>
         <div *ngIf="editProductFlag">
             <mat-form-field hintLabel="Макс 50 символов" appearance="fill">
-                <mat-label>Введите имя</mat-label>
+                <mat-label>Введите наименование</mat-label>
                 <input matInput #input maxlength="50" placeholder="Имя" [(ngModel)]="productToEdit.name">
                 <mat-hint align="end">{{input.value?.length || 0}}/50</mat-hint>
             </mat-form-field>
             
             <mat-form-field appearance="fill" floatLabel="always">
                 <mat-label>Цена</mat-label>
-                <input matInput type="number" placeholder="0" [(ngModel)]="productToEdit.price">
+                <input matInput type="number" [(ngModel)]="productToEdit.price">
                 <span matPrefix>Рублей&nbsp;</span>
             </mat-form-field>
 
             <mat-form-field appearance="fill" floatLabel="always">
                 <mat-label>Количество</mat-label>
-                <input matInput type="number" placeholder="0" [(ngModel)]="productToEdit.count">
+                <input matInput type="number" [(ngModel)]="productToEdit.count">
             </mat-form-field>
 
             <mat-form-field hintLabel="Макс 1000 символов" appearance="fill">

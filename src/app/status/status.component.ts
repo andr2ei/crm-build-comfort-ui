@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Status } from '../model/status';
 import { Lead } from '../model/lead';
 import { Product } from '../model/product';
+import { Constants } from '../utils/constants';
 import { MessageService } from '../service/message.service'
 import { MessagesComponent } from '../messages/messages.component'
 
@@ -19,21 +20,19 @@ export class StatusComponent implements OnInit {
                                 'storage', 'tradePrice', 'costWithDiscount', 'cost', 
                                 'discount', 'creationDate', 'status'];
   displayedProductColumns: string[] = ['name', 'price', 'count', 'comment', 'cost']
-  
-  private baseHost = 'crm-build-comfort'
 
-  private allStatusesURL = `http://${baseHost}:8080/api/v1/status/all`
-  
-  private allLeadsURL = `http://${baseHost}:8080/api/v1/lead/all`
-  private allLeadsByStatusIdURL = `http://${baseHost}:8080/api/v1/lead/all/status/`
-  private saveLeadURL = `http://${baseHost}:8080/api/v1/lead/create`
-  private editLeadURL = `http://${baseHost}:8080/api/v1/lead/edit`
+  private allStatusesURL = `http://${Constants.BASE_HOST}:8080/api/v1/status/all`
 
-  private allProductsByLeadIdURL = `http://${baseHost}:8080/api/v1/product/all/lead/`
-  private editProductURL = `http://${baseHost}:8080/api/v1/product/edit`
-  private saveProductURL = `http://${baseHost}:8080/api/v1/product/create`
-  private deleteProductURL = `http://${baseHost}:8080/api/v1/product/`
-  private exportPdfProductURL = `http://${baseHost}:8080/api/v1/product/export/pdf/`
+  private allLeadsURL = `http://${Constants.BASE_HOST}:8080/api/v1/lead/all`
+  private allLeadsByStatusIdURL = `http://${Constants.BASE_HOST}:8080/api/v1/lead/all/status/`
+  private saveLeadURL = `http://${Constants.BASE_HOST}:8080/api/v1/lead/create`
+  private editLeadURL = `http://${Constants.BASE_HOST}:8080/api/v1/lead/edit`
+
+  private allProductsByLeadIdURL = `http://${Constants.BASE_HOST}:8080/api/v1/product/all/lead/`
+  private editProductURL = `http://${Constants.BASE_HOST}:8080/api/v1/product/edit`
+  private saveProductURL = `http://${Constants.BASE_HOST}:8080/api/v1/product/create`
+  private deleteProductURL = `http://${Constants.BASE_HOST}:8080/api/v1/product/`
+  private exportPdfProductURL = `http://${Constants.BASE_HOST}:8080/api/v1/product/export/pdf/`
 
   statuses: Status[] = []
   selectedLeads?: Lead[]
