@@ -20,18 +20,20 @@ export class StatusComponent implements OnInit {
                                 'discount', 'creationDate', 'status'];
   displayedProductColumns: string[] = ['name', 'price', 'count', 'comment', 'cost']
   
-  private allStatusesURL = 'http://localhost:8080/api/v1/status/all'
-  
-  private allLeadsURL = 'http://localhost:8080/api/v1/lead/all'
-  private allLeadsByStatusIdURL = 'http://localhost:8080/api/v1/lead/all/status/'
-  private saveLeadURL = 'http://localhost:8080/api/v1/lead/create'
-  private editLeadURL = 'http://localhost:8080/api/v1/lead/edit'
+  private baseHost = 'crm-build-comfort'
 
-  private allProductsByLeadIdURL = 'http://localhost:8080/api/v1/product/all/lead/'
-  private editProductURL = 'http://localhost:8080/api/v1/product/edit'
-  private saveProductURL = 'http://localhost:8080/api/v1/product/create'
-  private deleteProductURL = 'http://localhost:8080/api/v1/product/'
-  private exportPdfProductURL = 'http://localhost:8080/api/v1/product/export/pdf/'
+  private allStatusesURL = `http://${baseHost}:8080/api/v1/status/all`
+  
+  private allLeadsURL = `http://${baseHost}:8080/api/v1/lead/all`
+  private allLeadsByStatusIdURL = `http://${baseHost}:8080/api/v1/lead/all/status/`
+  private saveLeadURL = `http://${baseHost}:8080/api/v1/lead/create`
+  private editLeadURL = `http://${baseHost}:8080/api/v1/lead/edit`
+
+  private allProductsByLeadIdURL = `http://${baseHost}:8080/api/v1/product/all/lead/`
+  private editProductURL = `http://${baseHost}:8080/api/v1/product/edit`
+  private saveProductURL = `http://${baseHost}:8080/api/v1/product/create`
+  private deleteProductURL = `http://${baseHost}:8080/api/v1/product/`
+  private exportPdfProductURL = `http://${baseHost}:8080/api/v1/product/export/pdf/`
 
   statuses: Status[] = []
   selectedLeads?: Lead[]
