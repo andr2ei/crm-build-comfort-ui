@@ -8,6 +8,7 @@ import { MessageService } from '../service/message.service'
 import { MessagesComponent } from '../messages/messages.component'
 
 import {MatDialog} from '@angular/material/dialog';
+import { IncomePerMonth } from '../model/income-per-month';
 
 @Component({
   selector: 'app-status',
@@ -20,9 +21,11 @@ export class StatusComponent implements OnInit {
                                 'storage', 'tradePrice', 'costWithDiscount', 'cost', 
                                 'discount', 'creationDate', 'status'];
   displayedProductColumns: string[] = ['name', 'price', 'count', 'comment', 'cost']
+  displayedIncomeColumns: string[] = ['year', 'month', 'totalTradePrice', 'totalCost', 'totalIncome']
 
   private allStatusesURL = `http://${Constants.BASE_HOST}:8080/api/v1/status/all`
 
+  private allLeadsIncomeURL = `http://${Constants.BASE_HOST}:8080/api/v1/lead/all/income`
   private allLeadsURL = `http://${Constants.BASE_HOST}:8080/api/v1/lead/all`
   private allLeadsByStatusIdURL = `http://${Constants.BASE_HOST}:8080/api/v1/lead/all/status/`
   private saveLeadURL = `http://${Constants.BASE_HOST}:8080/api/v1/lead/create`
@@ -33,6 +36,9 @@ export class StatusComponent implements OnInit {
   private saveProductURL = `http://${Constants.BASE_HOST}:8080/api/v1/product/create`
   private deleteProductURL = `http://${Constants.BASE_HOST}:8080/api/v1/product/`
   private exportPdfProductURL = `http://${Constants.BASE_HOST}:8080/api/v1/product/export/pdf/`
+
+  showStatisticsFlag: boolean = false;
+  incomePerMonth: IncomePerMonth[] = []
 
   statuses: Status[] = []
   selectedLeads?: Lead[]
@@ -122,12 +128,24 @@ export class StatusComponent implements OnInit {
     this.onSelectAllStatutes()
   }
 
+  onCreateStatistics(): void {
+    this.showStatisticsFlag = true;
+    this.selectedLeads = undefined
+    this.editLeadFlag = false
+    this.createLeadFlag = false
+    this.editProductFlag = false
+    this.createProductFlag = false
+    this.http.get<IncomePerMonth[]>(this.allLeadsIncomeURL)
+              .subscribe(incomePerMonth => this.incomePerMonth = incomePerMonth);
+  }
+
   getStatuses(): void {
     this.http.get<Status[]>(this.allStatusesURL)
               .subscribe(statuses => this.statuses = statuses);
   }
 
   onSelectAllStatutes(): void {
+    this.showStatisticsFlag = false;
     this.createLeadFlag = false
     this.editLeadFlag = false
     this.editProductFlag = false
@@ -142,6 +160,7 @@ export class StatusComponent implements OnInit {
   onSelectStatus(status: Status): void {
     this.selectedStatus = status
 
+    this.showStatisticsFlag = false;
     this.createLeadFlag = false
     this.editLeadFlag = false
     this.editProductFlag = false
@@ -159,6 +178,7 @@ export class StatusComponent implements OnInit {
     this.createLeadFlag = true
     this.editProductFlag = false
     this.createProductFlag = false
+    this.showStatisticsFlag = false
     this.statusOfLeadToCreate.name = this.statuses[0].name
   }
 
@@ -173,9 +193,12 @@ export class StatusComponent implements OnInit {
     this.leadToCreate.creationDate = yyyy + '-' + mm + '-' + dd
 
     this.http.post<Lead>(this.saveLeadURL, this.leadToCreate)
-      .subscribe(lead => this.leadToCreate = lead)
+      .subscribe(lead => this.leadToEdit = lead)
     this.messageServ.add(`Новый Лид ${this.leadToCreate.firstName} ${this.leadToCreate.lastName} был создан`)
     this.dialog.open(MessagesComponent)
+
+    this.selectedStatus = structuredClone(foundStatus)
+    this.onEditLead(structuredClone(this.leadToEdit))
   }
 
   onEditLead(lead: Lead): void {
@@ -184,6 +207,7 @@ export class StatusComponent implements OnInit {
       this.createLeadFlag = false
       this.editProductFlag = false
       this.createProductFlag = false
+      this.showStatisticsFlag = false
       this.editLeadFlag = true
 
       this.leadToEdit = lead
