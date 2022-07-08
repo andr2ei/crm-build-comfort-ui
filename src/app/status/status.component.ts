@@ -10,6 +10,7 @@ import { MessagesComponent } from '../messages/messages.component'
 import {MatDialog} from '@angular/material/dialog';
 import { IncomePerMonth } from '../model/income-per-month';
 
+
 @Component({
   selector: 'app-status',
   templateUrl: './status.component.html',
@@ -131,15 +132,36 @@ export class StatusComponent implements OnInit {
     this.onSelectAllStatutes()
   }
 
+  salesData = {
+    labels: [''],
+    datasets: [{ label: 'Прибыль', data: [0] }],
+  };
+
+  chartOptions = {
+    responsive: true,
+    plugins: {
+      title: {
+        display: true,
+        text: 'Ежемесячные продажи',
+      },
+    },
+  };
+
   onCreateStatistics(): void {
-    this.showStatisticsFlag = true;
     this.selectedLeads = undefined
     this.editLeadFlag = false
     this.createLeadFlag = false
     this.editProductFlag = false
     this.createProductFlag = false
     this.http.get<IncomePerMonth[]>(this.allLeadsIncomeURL)
-              .subscribe(incomePerMonth => this.incomePerMonth = incomePerMonth);
+              .subscribe(incomePerMonth => {
+                this.incomePerMonth = incomePerMonth
+                this.salesData.labels = incomePerMonth.map(i => `${i.year}-${i.month}`)
+                this.salesData.datasets[0] = {label: 'Прибыль', data: incomePerMonth.map(i => i.totalIncome)}
+                this.salesData.datasets.push({label: 'Оборот', data: incomePerMonth.map(i => i.totalCost)})
+                this.salesData.datasets.push({label: 'Закупка', data: incomePerMonth.map(i => i.totalTradePrice)})
+                this.showStatisticsFlag = true;
+              } );
   }
 
   getStatuses(): void {

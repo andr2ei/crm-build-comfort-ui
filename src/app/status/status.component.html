@@ -152,6 +152,15 @@
     <tr mat-row *matRowDef="let row; columns: displayedLeadColumns;" (click)="onEditLead(row)"></tr>
 </table>
 
+
+<div *ngIf="showStatisticsFlag">
+    <canvas baseChart 
+        [data]="salesData" 
+        [type]="'line'"
+        [options]="chartOptions">
+    </canvas>
+  </div>
+
 <table mat-table *ngIf="showStatisticsFlag" [dataSource]="incomePerMonth">
     
     <ng-container matColumnDef="year">
