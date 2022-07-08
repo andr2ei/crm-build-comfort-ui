@@ -4,11 +4,11 @@
 </div>
 <div id="outer-status-button">
     <div class="inner-status-button">
-        <button mat-raised-button color="primary" (click)="onSelectAllStatutes()" [disabled] ="selectedStatus == undefined && !showStatisticsFlag">Все</button>
+        <button mat-raised-button color="primary" (click)="onSelectAllStatutes()" [disabled] ="selectedStatus == undefined && !showStatisticsFlag && !createLeadFlag && !editLeadFlag">Все</button>
     </div>
     
     <div class="inner-status-button" *ngFor="let status of statuses">
-        <button mat-raised-button (click)="onSelectStatus(status)" [disabled]="selectedStatus?.id == status.id && !showStatisticsFlag">{{status.name}}</button>
+        <button mat-raised-button (click)="onSelectStatus(status)" [disabled]="selectedStatus?.id == status.id && !showStatisticsFlag && !createLeadFlag && !editLeadFlag">{{status.name}}</button>
     </div>
 </div>
 

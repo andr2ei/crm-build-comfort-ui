@@ -118,6 +118,9 @@ export class StatusComponent implements OnInit {
     service: false
   }
 
+  sortByCostAscFlag = true;
+  sortByCostDescFlag = false;
+
   constructor(
     private http: HttpClient, 
     private messageServ: MessageService, 
@@ -154,6 +157,11 @@ export class StatusComponent implements OnInit {
       .subscribe(leads => {
         this.clonedSelectedLeads = [...leads]
         this.selectedLeads = leads
+        if (this.sortByCostAscFlag) {
+          this.sortByCostAsc()
+        } else if (this.sortByCostDescFlag) {
+          this.sortByCostDesc()
+        }
       })
   }
 
@@ -169,6 +177,11 @@ export class StatusComponent implements OnInit {
       .subscribe(leads => {
         this.clonedSelectedLeads = [...leads]
         this.selectedLeads = leads
+        if (this.sortByCostAscFlag) {
+          this.sortByCostAsc()
+        } else if (this.sortByCostDescFlag) {
+          this.sortByCostDesc()
+        }
       })
   }
 
@@ -307,6 +320,8 @@ export class StatusComponent implements OnInit {
   }
 
   sortByCostAsc(): void {
+    this.sortByCostAscFlag = true;
+    this.sortByCostDescFlag = false;
     let sorted = this.clonedSelectedLeads
       .sort((x, y) => this.getTotalCostOfProducts(x.products) - this.getTotalCostOfProducts(y.products))
     let cloned = [...sorted]
@@ -314,6 +329,8 @@ export class StatusComponent implements OnInit {
   }
 
   sortByCostDesc(): void {
+    this.sortByCostDescFlag = true;
+    this.sortByCostAscFlag = false;
     let sorted = this.clonedSelectedLeads
       .sort((x, y) => this.getTotalCostOfProducts(y.products) - this.getTotalCostOfProducts(x.products))
     let cloned = [...sorted]
