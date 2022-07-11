@@ -67,6 +67,7 @@ export class StatusComponent implements OnInit {
     discount: 0,
     status: undefined,
     creationDate: '',
+    completedDate: '',
     comment: '',
     prepay: 0.0,
     prepayType: '',
@@ -87,6 +88,7 @@ export class StatusComponent implements OnInit {
     discount: 0,
     status: undefined,
     creationDate: '',
+    completedDate: '',
     comment: '',
     prepay: 0.0,
     prepayType: '',
@@ -94,6 +96,29 @@ export class StatusComponent implements OnInit {
     surchargeType: '',
     products: []
   };
+
+  showLeadFlag: boolean = false
+  leadToShow: Lead = {
+    id: 0,
+    firstName: '',
+    lastName: '',
+    phone: '',
+    address: '',
+    email: '',
+    storage: '',
+    storageUnitAddress: '',
+    tradePrice: 0,
+    discount: 0,
+    status: undefined,
+    creationDate: '',
+    completedDate: '',
+    comment: '',
+    prepay: 0.0,
+    prepayType: '',
+    surcharge: 0.0,
+    surchargeType: '',
+    products: []
+  }
 
   editLeadFlag: boolean = false
   statusOfLeadToUpdate: Status = {
@@ -113,6 +138,7 @@ export class StatusComponent implements OnInit {
     discount: 0,
     status: undefined,
     creationDate: '',
+    completedDate: '',
     comment: '',
     prepay: 0.0,
     prepayType: '',
@@ -187,6 +213,7 @@ export class StatusComponent implements OnInit {
     this.createLeadFlag = false
     this.editProductFlag = false
     this.createProductFlag = false
+    this.showLeadFlag = false
     this.http.get<IncomePerMonth[]>(this.allLeadsIncomeURL)
               .subscribe(incomePerMonth => {
                 this.incomePerMonth = incomePerMonth
@@ -208,6 +235,7 @@ export class StatusComponent implements OnInit {
     this.createLeadFlag = false
     this.editLeadFlag = false
     this.editProductFlag = false
+    this.showLeadFlag = false
     this.selectedStatus = undefined
     this.http.get<Lead[]>(this.allLeadsURL)
       .subscribe(leads => {
@@ -228,6 +256,7 @@ export class StatusComponent implements OnInit {
     this.createLeadFlag = false
     this.editLeadFlag = false
     this.editProductFlag = false
+    this.showLeadFlag = false
 
     this.http.get<Lead[]>(this.allLeadsByStatusIdURL + status.id)
       .subscribe(leads => {
@@ -245,10 +274,11 @@ export class StatusComponent implements OnInit {
     this.leadToCreate = structuredClone(this.emptyLead);
     this.selectedLeads = undefined
     this.editLeadFlag = false
-    this.createLeadFlag = true
     this.editProductFlag = false
     this.createProductFlag = false
     this.showStatisticsFlag = false
+    this.showLeadFlag = false
+    this.createLeadFlag = true
     this.statusOfLeadToCreate.name = this.statuses[0].name
   }
 
@@ -272,6 +302,20 @@ export class StatusComponent implements OnInit {
     this.dialog.open(MessagesComponent)
   }
 
+  onShowLeadDetails(lead: Lead): void {
+    this.selectedLeads = undefined
+    this.createLeadFlag = false
+    this.editProductFlag = false
+    this.createProductFlag = false
+    this.showStatisticsFlag = false
+    this.editLeadFlag = false
+    this.showLeadFlag = true
+
+    this.leadToShow = structuredClone(lead)
+    this.http.get<Product[]>(this.allProductsByLeadIdURL + this.leadToShow.id)
+                .subscribe(products => this.productsOfLeadToUpdate = products)
+  }
+
   onEditLead(lead: Lead): void {
     if (this.selectedStatus) {
       this.productsOfLeadToUpdate = []
@@ -281,8 +325,9 @@ export class StatusComponent implements OnInit {
       this.createProductFlag = false
       this.showStatisticsFlag = false
       this.editLeadFlag = true
+      this.showLeadFlag = false
 
-      this.leadToEdit = lead
+      this.leadToEdit = structuredClone(lead)
       this.statusOfLeadToUpdate = structuredClone(this.selectedStatus)
       this.http.get<Product[]>(this.allProductsByLeadIdURL + this.leadToEdit.id)
                 .subscribe(products => this.productsOfLeadToUpdate = products)
@@ -293,7 +338,7 @@ export class StatusComponent implements OnInit {
     var foundStatus = this.statuses.filter(status => status.name == this.statusOfLeadToUpdate.name)[0]
     this.leadToEdit.status = structuredClone(foundStatus)
     this.http.put<Lead>(this.editLeadURL, this.leadToEdit)
-      .subscribe(obj => obj)
+      .subscribe(lead => this.onShowLeadDetails(lead))
     this.messageServ.add(`Лид ${this.leadToEdit.firstName} ${this.leadToEdit.lastName} был успешно сохранен`)
     this.dialog.open(MessagesComponent)
   }
@@ -326,12 +371,12 @@ export class StatusComponent implements OnInit {
     this.editProductFlag = false
   }
 
-  onCreateCP(): void {
+  onCreateCP(id: number, discount: number): void {
     let headers = new HttpHeaders()
     headers = headers.set('Accept', 'application/pdf')
     let params = new HttpParams()
-    params = params.set('discount', this.leadToEdit.discount)
-    this.http.get(this.exportPdfProductURL + this.leadToEdit.id, { headers: headers, params: params, responseType: 'blob'})
+    params = params.set('discount', discount)
+    this.http.get(this.exportPdfProductURL + id, { headers: headers, params: params, responseType: 'blob'})
       .subscribe((data) => {
           var blob = new Blob([data], {type: 'application/pdf'});
           const fileURL = URL.createObjectURL(blob);

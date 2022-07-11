@@ -12,6 +12,7 @@ import { MatSelectModule } from '@angular/material/select'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule } from '@angular/material/dialog'
 import { MatIconModule } from '@angular/material/icon'
+import { MatCardModule } from '@angular/material/card'
 import { NgChartsModule } from 'ng2-charts';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -39,7 +40,8 @@ import { MessagesComponent } from './messages/messages.component';
     MatProgressSpinnerModule,
     MatDialogModule,
     MatIconModule,
-    NgChartsModule
+    NgChartsModule,
+    MatCardModule
   ],
   providers: [ ],
   bootstrap: [AppComponent]

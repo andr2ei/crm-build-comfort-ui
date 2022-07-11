@@ -14,6 +14,7 @@ export interface Lead {
     discount: number
     status: Status | undefined
     creationDate: string
+    completedDate: string
     comment: string
     prepay: number
     prepayType: string
