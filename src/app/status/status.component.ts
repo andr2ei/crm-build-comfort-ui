@@ -66,6 +66,20 @@ export class StatusComponent implements OnInit {
     creationDate: '',
     products: []
   };
+  emptyLead: Lead = {
+    id: 0,
+    firstName: '',
+    lastName: '',
+    phone: '',
+    address: '',
+    email: '',
+    storage: '',
+    tradePrice: 0,
+    discount: 0,
+    status: undefined,
+    creationDate: '',
+    products: []
+  };
 
   editLeadFlag: boolean = false
   statusOfLeadToUpdate: Status = {
@@ -134,7 +148,7 @@ export class StatusComponent implements OnInit {
 
   salesData = {
     labels: [''],
-    datasets: [{ label: 'Прибыль', data: [0] }],
+    datasets: [{ label: 'Прибыль', data: [0] }, { label: 'Оборот', data: [0] }, { label: 'Закупка', data: [0] }],
   };
 
   chartOptions = {
@@ -158,8 +172,8 @@ export class StatusComponent implements OnInit {
                 this.incomePerMonth = incomePerMonth
                 this.salesData.labels = incomePerMonth.map(i => `${i.year}-${i.month}`)
                 this.salesData.datasets[0] = {label: 'Прибыль', data: incomePerMonth.map(i => i.totalIncome)}
-                this.salesData.datasets.push({label: 'Оборот', data: incomePerMonth.map(i => i.totalCost)})
-                this.salesData.datasets.push({label: 'Закупка', data: incomePerMonth.map(i => i.totalTradePrice)})
+                this.salesData.datasets[1] = {label: 'Оборот', data: incomePerMonth.map(i => i.totalCost)}
+                this.salesData.datasets[2] = {label: 'Закупка', data: incomePerMonth.map(i => i.totalTradePrice)}
                 this.showStatisticsFlag = true;
               } );
   }
@@ -208,6 +222,7 @@ export class StatusComponent implements OnInit {
   }
 
   onCreateLead(): void {
+    this.leadToCreate = structuredClone(this.emptyLead);
     this.selectedLeads = undefined
     this.editLeadFlag = false
     this.createLeadFlag = true
@@ -228,16 +243,18 @@ export class StatusComponent implements OnInit {
     this.leadToCreate.creationDate = yyyy + '-' + mm + '-' + dd
 
     this.http.post<Lead>(this.saveLeadURL, this.leadToCreate)
-      .subscribe(lead => this.leadToEdit = lead)
+      .subscribe(lead => {
+        this.leadToEdit = lead
+        this.selectedStatus = structuredClone(foundStatus)
+        this.onEditLead(structuredClone(this.leadToEdit))
+      })
     this.messageServ.add(`Новый Лид ${this.leadToCreate.firstName} ${this.leadToCreate.lastName} был создан`)
     this.dialog.open(MessagesComponent)
-
-    this.selectedStatus = structuredClone(foundStatus)
-    this.onEditLead(structuredClone(this.leadToEdit))
   }
 
   onEditLead(lead: Lead): void {
     if (this.selectedStatus) {
+      this.productsOfLeadToUpdate = []
       this.selectedLeads = undefined
       this.createLeadFlag = false
       this.editProductFlag = false
