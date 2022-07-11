@@ -119,7 +119,7 @@
     </ng-container>
 
     <ng-container matColumnDef="tradePrice">
-        <th mat-header-cell *matHeaderCellDef> Закупочная цена </th>
+        <th mat-header-cell *matHeaderCellDef> Закупка </th>
         <td mat-cell *matCellDef="let lead"> {{lead.tradePrice}} </td>
     </ng-container>
 
@@ -133,6 +133,11 @@
         <td mat-cell *matCellDef="let lead"> {{getTotalCostOfProducts(lead.products)}} </td>
     </ng-container>
 
+    <ng-container matColumnDef="income">
+        <th mat-header-cell *matHeaderCellDef> Прибыль </th>
+        <td mat-cell *matCellDef="let lead"> {{getTotalCostWithDiscountOfProducts(lead.products, lead.discount) - lead.tradePrice}} </td>
+    </ng-container>
+
     <ng-container matColumnDef="discount">
         <th mat-header-cell *matHeaderCellDef> Скидка </th>
         <td mat-cell *matCellDef="let lead"> {{lead.discount}} </td>
@@ -141,6 +146,11 @@
     <ng-container matColumnDef="creationDate">
         <th mat-header-cell *matHeaderCellDef> Дата создания </th>
         <td mat-cell *matCellDef="let lead"> {{lead.creationDate}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="comment">
+        <th mat-header-cell *matHeaderCellDef> Комментарий </th>
+        <td mat-cell *matCellDef="let lead"> {{lead.comment}} </td>
     </ng-container>
 
     <ng-container matColumnDef="status">
@@ -196,46 +206,54 @@
 
     <div class="float-child-1">
         <div>
-            <mat-form-field hintLabel="Макс 30 символов" appearance="fill">
+            <mat-form-field appearance="fill">
                 <mat-label>Введите имя</mat-label>
                 <input matInput #input maxlength="30" placeholder="Имя" [(ngModel)]="leadToEdit.firstName">
-                <mat-hint align="end">{{input.value?.length || 0}}/30</mat-hint>
             </mat-form-field>
         </div>
         <div>
-            <mat-form-field hintLabel="Макс 30 символов" appearance="fill">
+            <mat-form-field appearance="fill">
                 <mat-label>Введите фамилию</mat-label>
                 <input matInput #input maxlength="30" placeholder="Фамилия" [(ngModel)]="leadToEdit.lastName">
-                <mat-hint align="end">{{input.value?.length || 0}}/30</mat-hint>
             </mat-form-field>
         </div>
         <div>
-            <mat-form-field hintLabel="Только цифры" appearance="fill">
+            <mat-form-field appearance="fill">
                 <mat-label>Введите телефон</mat-label>
                 <input matInput #input maxlength="11" placeholder="Телефон" [(ngModel)]="leadToEdit.phone">
-                <mat-hint align="end">{{input.value?.length || 0}}/11</mat-hint>
             </mat-form-field>
         </div>
         <div>
-            <mat-form-field hintLabel="Макс 200 символов" appearance="fill">
+            <mat-form-field appearance="fill">
                 <mat-label>Введите адрес</mat-label>
                 <input matInput #input maxlength="200" placeholder="Адрес" [(ngModel)]="leadToEdit.address">
-                <mat-hint align="end">{{input.value?.length || 0}}/200</mat-hint>
             </mat-form-field>
         </div>
         <div>
-            <mat-form-field hintLabel="Макс 50 символов" appearance="fill">
+            <mat-form-field appearance="fill">
                 <mat-label>Введите электронную почту</mat-label>
                 <input matInput #input maxlength="50" placeholder="Электронная почта" [(ngModel)]="leadToEdit.email">
-                <mat-hint align="end">{{input.value?.length || 0}}/50</mat-hint>
             </mat-form-field>
         </div>
 
         <div>
-            <mat-form-field hintLabel="Макс 200 символов" appearance="fill">
+            <mat-form-field appearance="fill">
                 <mat-label>Введите склад</mat-label>
                 <input matInput #input maxlength="200" placeholder="склад" [(ngModel)]="leadToEdit.storage">
-                <mat-hint align="end">{{input.value?.length || 0}}/200</mat-hint>
+            </mat-form-field>
+        </div>
+
+        <div>
+            <mat-form-field appearance="fill">
+                <mat-label>Введите адрес склада</mat-label>
+                <input matInput #input maxlength="1000" placeholder="Адрес склада" [(ngModel)]="leadToEdit.storageUnitAddress">
+            </mat-form-field>
+        </div>
+
+        <div>
+            <mat-form-field appearance="fill">
+                <mat-label>Комментарий</mat-label>
+                <input matInput #input maxlength="1000" placeholder="Комментарий" [(ngModel)]="leadToEdit.comment">
             </mat-form-field>
         </div>
 
@@ -255,6 +273,42 @@
         </div>
 
         <div>
+            <mat-form-field appearance="fill" floatLabel="always">
+                <mat-label>Предоплата</mat-label>
+                <input matInput type="number" placeholder="0" [(ngModel)]="leadToEdit.prepay">
+            </mat-form-field>
+        </div>
+
+        <div>
+            <mat-form-field appearance="fill">
+                <mat-label>Выберите тип предоплаты</mat-label>
+                <mat-select [(ngModel)]="leadToEdit.prepayType">
+                    <div *ngFor="let payType of payTypes">
+                        <mat-option value="{{payType}}">{{payType}}</mat-option>
+                    </div>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <div>
+            <mat-form-field appearance="fill" floatLabel="always">
+                <mat-label>Доплата</mat-label>
+                <input matInput type="number" placeholder="0" [(ngModel)]="leadToEdit.surcharge">
+            </mat-form-field>
+        </div>
+
+        <div>
+            <mat-form-field appearance="fill">
+                <mat-label>Выберите тип доплаты</mat-label>
+                <mat-select [(ngModel)]="leadToEdit.surchargeType">
+                    <div *ngFor="let payType of payTypes">
+                        <mat-option value="{{payType}}">{{payType}}</mat-option>
+                    </div>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <div>
             <mat-form-field appearance="fill">
                 <mat-label>Выберите статус</mat-label>
                 <mat-select [(ngModel)]="statusOfLeadToUpdate.name">
@@ -262,7 +316,6 @@
                         <mat-option value="{{status.name}}">{{status.name}}</mat-option>
                     </div>
                 </mat-select>
-                <mat-hint align="end">Вот выпадающий список ^</mat-hint>
             </mat-form-field>
         </div>
         <div>

@@ -19,10 +19,12 @@ import { IncomePerMonth } from '../model/income-per-month';
 export class StatusComponent implements OnInit {
 
   displayedLeadColumns: string[] = ['id', 'firstName', 'lastName', 'phone', 'address', 'email', 
-                                'storage', 'tradePrice', 'costWithDiscount', 'cost', 
-                                'discount', 'creationDate', 'status'];
+                                'storage', 'tradePrice', 'costWithDiscount', 'cost', 'income',
+                                'discount', 'creationDate', 'comment', 'status'];
   displayedProductColumns: string[] = ['name', 'price', 'count', 'comment', 'cost']
   displayedIncomeColumns: string[] = ['year', 'month', 'totalTradePrice', 'totalCost', 'totalIncome']
+
+  payTypes: string[] = ['Наличные', 'Карта']
 
   private allStatusesURL = `http://${Constants.BASE_HOST}:8080/api/v1/status/all`
 
@@ -60,10 +62,16 @@ export class StatusComponent implements OnInit {
     address: '',
     email: '',
     storage: '',
+    storageUnitAddress: '',
     tradePrice: 0,
     discount: 0,
     status: undefined,
     creationDate: '',
+    comment: '',
+    prepay: 0.0,
+    prepayType: '',
+    surcharge: 0.0,
+    surchargeType: '',
     products: []
   };
   emptyLead: Lead = {
@@ -74,10 +82,16 @@ export class StatusComponent implements OnInit {
     address: '',
     email: '',
     storage: '',
+    storageUnitAddress: '',
     tradePrice: 0,
     discount: 0,
     status: undefined,
     creationDate: '',
+    comment: '',
+    prepay: 0.0,
+    prepayType: '',
+    surcharge: 0.0,
+    surchargeType: '',
     products: []
   };
 
@@ -94,10 +108,16 @@ export class StatusComponent implements OnInit {
     address: '',
     email: '',
     storage: '',
+    storageUnitAddress: '',
     tradePrice: 0,
     discount: 0,
     status: undefined,
     creationDate: '',
+    comment: '',
+    prepay: 0.0,
+    prepayType: '',
+    surcharge: 0.0,
+    surchargeType: '',
     products: []
   };
 

@@ -9,9 +9,15 @@ export interface Lead {
     address: string
     email: string
     storage: string
+    storageUnitAddress: string
     tradePrice: number
     discount: number
     status: Status | undefined
     creationDate: string
+    comment: string
+    prepay: number
+    prepayType: string
+    surcharge: number
+    surchargeType: string
     products: Product[]
 }
