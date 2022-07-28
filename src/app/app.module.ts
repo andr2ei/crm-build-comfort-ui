@@ -13,6 +13,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule } from '@angular/material/dialog'
 import { MatIconModule } from '@angular/material/icon'
 import { MatCardModule } from '@angular/material/card'
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { NgChartsModule } from 'ng2-charts';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -41,7 +42,8 @@ import { MessagesComponent } from './messages/messages.component';
     MatDialogModule,
     MatIconModule,
     NgChartsModule,
-    MatCardModule
+    MatCardModule,
+    MatPaginatorModule
   ],
   providers: [ ],
   bootstrap: [AppComponent]
